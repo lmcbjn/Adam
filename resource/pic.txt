@@ -1,0 +1,4 @@
+# root
+minimize = os.path.join(prefix, 'minimize.bmp')
+
+
