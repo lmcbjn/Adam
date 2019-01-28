@@ -5,6 +5,7 @@
 import time
 import cv2
 import numpy
+import pytesseract
 import pyautogui as auto
 
 from resource import pic as picture
@@ -57,26 +58,6 @@ class Adam:
             self._point = [(point1[0] + width / 2, point1[1] + height / 2) for point1 in point_list]
             return len(point_list)
 
-    def click_point(self, left=True, times=1):
-        print(self._point)
-        if isinstance(self._point, tuple):
-            if left:
-                if times == 1:
-                    auto.click(*self._point)
-                elif times == 2:
-                    auto.doubleClick(*self._point)
-                elif times == 3:
-                    auto.tripleClick(*self._point)
-                else:
-                    raise Exception("times muse within 1~3.")
-            else:
-                auto.rightClick(*self._point)
-        elif isinstance(self._point, list):
-            for point in self._point:
-                auto.click(point)
-                time.sleep(0.2)
-        auto.dragTo(1920, 1080)
-
     def find_object(self, image):
         """
         Find object on screen.
@@ -101,6 +82,35 @@ class Adam:
         :return:
         """
         pass
+
+    def click_point(self, left=True, times=1):
+        print(self._point)
+        if isinstance(self._point, tuple):
+            if left:
+                if times == 1:
+                    auto.click(*self._point)
+                elif times == 2:
+                    auto.doubleClick(*self._point)
+                elif times == 3:
+                    auto.tripleClick(*self._point)
+                else:
+                    raise Exception("times muse within 1~3.")
+            else:
+                auto.rightClick(*self._point)
+        elif isinstance(self._point, list):
+            for point in self._point:
+                auto.click(point)
+                time.sleep(0.2)
+        auto.dragTo(1920, 1080)
+
+    @classmethod
+    def do_ocr_on_image(cls, img, data=False):
+        image = cv2.imread(img)
+        if data:
+            data = pytesseract.image_to_data(image)
+            return data
+        string = pytesseract.image_to_string(image)
+        return string
 
     @classmethod
     def screenshot(cls):
