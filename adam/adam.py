@@ -8,6 +8,7 @@ import numpy
 import pytesseract
 import pyautogui as auto
 
+from datetime import datetime
 from resource import pic as picture
 
 pic = picture.Picture()
@@ -74,34 +75,72 @@ class Adam:
         self._point = (width / 2 + match_rate[3][0], height / 2 + match_rate[3][1])
         return True
 
-    def wait_for_object(self, image, times):
+    def wait_for_object(self, image, duration=60):
         """
         Find object on the screen within given times.
         :param image:
-        :param times:
+        :param duration:->int seconds
         :return:
         """
-        pass
+        start = datetime.utcnow()
+        while True:
+            end = datetime.utcnow()
+            delta = end - start
+            if delta.seconds < duration:
+                if self.find_object(image):
+                    return True
+                else:
+                    continue
+            else:
+                raise Exception("Can't find image")
 
-    def click_point(self, left=True, times=1):
-        print(self._point)
-        if isinstance(self._point, tuple):
+    def touch_object(self, image):
+        if self.find_object(image):
+            self.click_object()
+        else:
+            raise Exception("Can't find image.")
+
+    def click_object(self, left=True, times=1):
+        self.click_point(self._point, left, times)
+
+    @classmethod
+    def click_point(cls, points, left=True, times=1):
+        if isinstance(points, tuple):
             if left:
                 if times == 1:
-                    auto.click(*self._point)
+                    auto.click(*points)
                 elif times == 2:
-                    auto.doubleClick(*self._point)
+                    auto.doubleClick(*points)
                 elif times == 3:
-                    auto.tripleClick(*self._point)
+                    auto.tripleClick(*points)
                 else:
-                    raise Exception("times muse within 1~3.")
+                    raise Exception("times must within 1~3.")
+                time.sleep(0.2)
             else:
-                auto.rightClick(*self._point)
-        elif isinstance(self._point, list):
-            for point in self._point:
+                auto.rightClick(*points)
+        elif isinstance(points, list):
+            for point in points:
                 auto.click(point)
                 time.sleep(0.2)
         auto.dragTo(1920, 1080)
+
+    @classmethod
+    def key_down(cls, key):
+        auto.keyDown(key)
+
+    @classmethod
+    def key_up(cls, key):
+        auto.keyUp(key)
+
+    @classmethod
+    def click_keys(cls, *keys, interval=0):
+        for key in keys:
+            auto.press(key)
+            time.sleep(interval)
+
+    @classmethod
+    def send_text(cls, message, interval=0.1):
+        auto.typewrite(message, interval)
 
     @classmethod
     def do_ocr_on_image(cls, img, data=False):
@@ -119,9 +158,3 @@ class Adam:
         :return:
         """
         return auto.screenshot()
-
-
-adam = Adam()
-# result = adam.find_object(pic.minimize)
-if adam.count_object(pic.minimize):
-    adam.click_point()
