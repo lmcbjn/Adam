@@ -84,8 +84,7 @@ class Adam:
         """
         start = datetime.utcnow()
         while True:
-            end = datetime.utcnow()
-            delta = end - start
+            delta = datetime.utcnow() - start
             if delta.seconds < duration:
                 if self.find_object(image):
                     return True
@@ -123,6 +122,19 @@ class Adam:
                 auto.click(point)
                 time.sleep(0.2)
         auto.dragTo(1920, 1080)
+
+    @classmethod
+    def find_text(cls, message):
+        img = cls.screenshot()
+        """
+        waiting for adding image processing.
+        """
+        text = cls.do_ocr_on_image(img)
+        for word in text:
+            if message in word:
+                return word
+        else:
+            return False
 
     @classmethod
     def key_down(cls, key):
