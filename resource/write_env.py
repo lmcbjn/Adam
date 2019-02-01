@@ -48,6 +48,6 @@ for root, dirs, files in os.walk(directory_path):
                 # 写入到pic.txt
                 with open(txt_path, 'a') as file:
                     file.write(full_str)
-        # 每个文件夹中间空两行
+        # 每个文件夹中间空一行
         with open(txt_path, 'a')as file:
-            file.write('\n' + '\n')
+            file.write('\n')

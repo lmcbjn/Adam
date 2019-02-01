@@ -13,5 +13,9 @@ class Picture:
     # root
     minimize = os.path.join(prefix, 'minimize.bmp')
 
-# pic = Picture
-# print(pic.minimize)
+    # steam/
+    ad_close = os.path.join(prefix, 'steam/ad_close.bmp')
+    library = os.path.join(prefix, 'steam/library.bmp')
+    play = os.path.join(prefix, 'steam/play.bmp')
+    search_library = os.path.join(prefix, 'steam/search_library.bmp')
+    slash_it_steam = os.path.join(prefix, 'steam/slash_it_steam.bmp')

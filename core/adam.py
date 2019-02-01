@@ -19,7 +19,7 @@ class Adam:
     def __init__(self):
         self._point = None
         # auto.FAILSAFE = False
-        auto.PAUSE = 0.1
+        # auto.PAUSE = 0.1
 
     def count_object(self, image):
         """
@@ -102,6 +102,15 @@ class Adam:
     def click_object(self, left=True, times=1):
         self.click_point(self._point, left, times)
 
+    def show_screenshot(self, rgb=True):
+        mode = cv2.COLOR_RGB2BGR
+        if not rgb:
+            mode = cv2.COLOR_BGR2GRAY
+        img = cv2.cvtColor(numpy.asarray(self.screenshot()), mode)
+        img = cv2.resize(img, (1536, 864))
+        cv2.imshow('image', img)
+        cv2.waitKey(0)
+
     @classmethod
     def click_point(cls, points, left=True, times=1):
         if isinstance(points, tuple):
@@ -145,18 +154,20 @@ class Adam:
         auto.keyUp(key)
 
     @classmethod
-    def click_keys(cls, *keys, interval=0):
-        for key in keys:
-            auto.press(key)
-            time.sleep(interval)
+    def click_key(cls, key, times=1, interval=0):
+        auto.press(key, presses=times, interval=interval)
+
+    @classmethod
+    def hot_key(cls, *keys):
+        auto.hotkey(*keys)
 
     @classmethod
     def send_text(cls, message, interval=0.1):
-        auto.typewrite(message, interval)
+        auto.typewrite(message, interval=interval)
 
     @classmethod
     def do_ocr_on_image(cls, img, data=False):
-        image = cv2.imread(img)
+        image = cv2.imread(img, cv2.IMREAD_GRAYSCALE)
         if data:
             data = pytesseract.image_to_data(image)
             return data
